@@ -3,5 +3,10 @@
 **/.clj-kondo
 **/.cpcache
 **/.calva
-**/.envrc
 **/.nrepl-port
+
+# direnv
+**/.envrc
+
+# AoC
+clojure-2025/data
