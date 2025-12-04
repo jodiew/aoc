@@ -16,3 +16,5 @@
 (defrecord a-record [title author])
 (false? false) (false? nil) ; only false values, everything else is true
 
+(defn str->int [str]
+  (Integer/parseInt str))
