@@ -66,12 +66,12 @@ L82")
                      (and left? (= dial 0)) (dec (quot (+ (- 100 dial) (dec amount)) 100))
                      left? (quot (+ (- 100 dial) (dec amount)) 100)
                      :else "???")]
-    ;; (println "The dial is rotated" rotation "to point at " new-dial (if (< 0 zero-click) (str "; during this rotation, it points at 0 " zero-click " times") ""))
+    (println "The dial is rotated" rotation "to point at " new-dial (if (< 0 zero-click) (str "; during this rotation, it points at 0 " zero-click " times") ""))
     [new-dial (if (zero? new-dial) (+ zero-click total-zero 1) (+ zero-click total-zero))]))
 
 (defn find-password-new [data]
   (let [dial 50]
-    ;; (println "The dial starts by pointing at" dial)
+    (println "The dial starts by pointing at" dial)
     (->> (str/split-lines data)
          (reduce more-rotation [dial 0])
          last)))
