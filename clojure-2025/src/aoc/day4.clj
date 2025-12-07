@@ -1,6 +1,8 @@
 (ns aoc.day4
   (:require
-   [aoc.core :refer [**debug?** generate-adj-grid generate-grid split-to-grid]]
+   [aoc.core :refer [**debug?** generate-adj-grid generate-grid iinc
+                     split-to-grid]]
+   [clojure.set :as set]
    [clojure.string :as str]))
 
 (defn get-roll [rolls [row col]] ((nth rolls row) col))
@@ -53,3 +55,70 @@
        debug-rolls
        log-rolls
        count))
+
+(defn grid-to-set [grid]
+  (set (for [row (range (count grid))
+             col (range (count (first grid)))
+             :when (= "@" ((nth grid row) col))]
+         [row col])))
+
+(def debug-state (atom {:size nil
+                        :rolls nil}))
+
+(defn debug-set-size [grid]
+  (if **debug?**
+    (swap! debug-state assoc :size [(count grid) (count (first grid))])
+    nil)
+  grid)
+
+(defn debug-set-rolls [rolls]
+  (if **debug?**
+    (swap! debug-state assoc :rolls rolls)
+    nil)
+  rolls)
+
+(defn debug-print-set [rolls-set]
+  (if **debug?**
+    (let [grid-coords (apply generate-grid (@debug-state :size))
+          set->string (for [coor grid-coords]
+                        (if (rolls-set coor) "@" "."))]
+      ())
+    nil)
+  rolls-set)
+
+(defn removable-roll
+  ([rolls] (fn [acc roll] (removable-roll rolls acc roll)))
+  ([rolls acc [roll-row roll-col]]
+   (let [adj (for [row (range (dec roll-row) (iinc roll-row))
+                   col (range (dec roll-col) (iinc roll-col))
+                   :when (and (not= [row col] [roll-row roll-col])
+                              (contains? rolls [row col]))]
+               [row col])]
+     (if (< (count adj) 4)
+       (conj acc [roll-row roll-col])
+       acc))))
+
+
+(defn find-removable-rolls [{rolls :rolls removed-count :removed-count}]
+  (let [removed (reduce (removable-roll rolls) #{} rolls)]
+    {:removed removed
+     :rolls (set/difference rolls removed)
+     :removed-count (+ removed-count (count removed))}))
+
+(defn setup-state [rolls]
+  {:removed #{[-1 -1]}
+   :rolls rolls
+   :removed-count 0})
+
+(defn recur-remove-roll [init-state]
+  (loop [state init-state]
+    (if (empty? (state :removed))
+      (state :removed-count)
+      (recur (find-removable-rolls state)))))
+
+(defn total-removed-rolls [data]
+  (->> data
+       split-to-grid
+       grid-to-set
+       setup-state
+       recur-remove-roll))

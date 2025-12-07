@@ -33,5 +33,7 @@
         (true? (day4/is-roll? example-data-grid [1 0])))))
 
 (deftest total-accessable-rolls-test
-      (testing "Final solution to part 1"
-        (is (= 13 (day4/total-accessable-rolls example-data)))))
+  (testing "Final solution to part 1"
+    (is (= 13 (day4/total-accessable-rolls example-data))))
+  (testing "Final solution to part 2"
+    (is (= 43 (day4/total-removed-rolls example-data)))))
