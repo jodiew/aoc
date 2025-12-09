@@ -17,7 +17,7 @@
 (false? false) (false? nil) ; only false values, everything else is true
 
 (defn str->int [str]
-  (Integer/parseInt str))
+  (bigint str))
 
 (defn split-to-grid [data]
   (let [split-line #(str/split % #"")]
@@ -42,3 +42,6 @@
     adj))
 
 (def ^:dynamic **debug?** false)
+
+(defn debug-println [& input]
+  (when **debug?** (apply println input)))
