@@ -64,7 +64,7 @@
   (let [{splits :splits
          beams :beams} (reduce (partial next-beam-t row-splitters) {:splits 0 :beams {}} prev-beams)]
     {:splits (+ total-splits splits)
-     :beams (filter (comp (partial in-manifold? cols) first) beams)}))
+     :beams (into {} (filter (comp (partial in-manifold? cols) first) beams))}))
 
 (defn do-splits-t [{cols :cols splitters :splitters beams :beams}]
   (reduce (partial next-beams-t cols) {:splits 0 :beams (into {} (map #(vector % 1) beams))} splitters))
